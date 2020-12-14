@@ -20,7 +20,7 @@ readAllButton.onclick = async () => {
   await readAll();
 };
 updateButton.onclick = async () => {
-  await updateAll(todo);
+  await updateById(todo);
 };
 deleteButton.onclick = async () => {
   await deleteById(todo);
@@ -47,7 +47,12 @@ async function create(data) {
 }
 
 async function readById(id) {
-  let response = await fetch(`http://localhost:9092/person/read/${id}`);
+  let response = await fetch(`http://localhost:9092/person/read/${id}`, {
+    method: "get",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
 
   if (!response.ok) {
     console.log(
@@ -62,14 +67,13 @@ async function readById(id) {
   let div = document.getElementById("myDiv");
   let listItems = [];
   let listItemId = `ID : ${data.id}<br>`;
-  let listItemName = `NAME : ${data.name}<br>`;
+  let listItemName = `TASK : ${data.name}<br>`;
   let listItemTasks = [];
   if (data.tasks !== undefined) {
     for (let j = 0; j < data.tasks.length; j++) {
       let listItemTask = `<li>${data.tasks[j]}</li>`;
       listItemTasks.push(listItemTask);
     }
-    listItemTasks = `TASKS : <ul>${listItemTasks.join("")}</ul>`;
   }
   let listItem = `<li>${listItemId}${listItemName}${listItemTasks}<br><br></li>`;
   listItems.push(listItem);
@@ -78,7 +82,12 @@ async function readById(id) {
 }
 
 async function readAll() {
-  let response = await fetch(`http://localhost:9092/person/read`);
+  let response = await fetch(`http://localhost:9092/person/read`, {
+    method: "get",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
 
   if (!response.ok) {
     console.log(
@@ -95,14 +104,13 @@ async function readAll() {
   for (let i = 0; i < data.length; i++) {
     let data_i = data[i];
     let listItemId = `ID : ${data_i.id}<br>`;
-    let listItemName = `NAME : ${data_i.name}<br>`;
+    let listItemName = `TASK : ${data_i.name}<br>`;
     let listItemTasks = [];
     if (data_i.tasks !== undefined) {
       for (let j = 0; j < data_i.tasks.length; j++) {
         let listItemTask = `<li>${data_i.tasks[j]}</li>`;
         listItemTasks.push(listItemTask);
       }
-      listItemTasks = `TASKS : <ul>${listItemTasks.join("")}</ul>`;
     }
     let listItem = `<li>${listItemId}${listItemName}${listItemTasks}<br><br></li>`;
     listItems.push(listItem);
@@ -113,7 +121,7 @@ async function readAll() {
 
 async function updateById(id) {
   let response = await fetch(`http://localhost:9092/person/update/${id}`, {
-    method: "update",
+    method: "put",
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
