@@ -1,7 +1,12 @@
-let id = document.getElementById("input");
-let todo = "";
+let id = document.getElementById("id-input");
+let todoId = "";
 id.addEventListener("input", (event) => {
-  todo = event.target.value;
+  todoId = event.target.value;
+});
+let task = document.getElementById("task-input");
+let todoTask = "";
+task.addEventListener("input", (event) => {
+  todoTask = event.target.value;
 });
 
 let createButton = document.getElementById("createButton");
@@ -11,19 +16,19 @@ let updateButton = document.getElementById("updateButton");
 let deleteButton = document.getElementById("deleteButton");
 
 createButton.onclick = async () => {
-  await create(todo);
+  await create(todoTask);
 };
 readButton.onclick = async () => {
-  await readById(todo);
+  await readById(todoId);
 };
 readAllButton.onclick = async () => {
   await readAll();
 };
 updateButton.onclick = async () => {
-  await updateById(todo);
+  await updateById(todoId, todoTask);
 };
 deleteButton.onclick = async () => {
-  await deleteById(todo);
+  await deleteById(todoId);
 };
 
 async function create(data) {
@@ -119,12 +124,13 @@ async function readAll() {
   div.innerHTML = unorderedList;
 }
 
-async function updateById(id) {
+async function updateById(id, data) {
   let response = await fetch(`http://localhost:9092/person/update/${id}`, {
     method: "put",
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
+    body: JSON.stringify({ name: data }),
   });
 
   if (!response.ok) {
@@ -133,6 +139,9 @@ async function updateById(id) {
     );
     return;
   }
+
+  let div = document.getElementById("myDiv");
+  div.innerText = `${id} has been updated!`;
 }
 
 async function deleteById(id) {
