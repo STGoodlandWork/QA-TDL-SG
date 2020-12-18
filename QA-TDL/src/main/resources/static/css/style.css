@@ -1,0 +1,13 @@
+body {
+  text-align: center;
+  margin: 50px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  background-color: honeydew;
+}
+
+#myDiv {
+  background-color: antiquewhite;
+  border-radius: 15px;
+  border: 1px lightgrey solid;
+  padding: 10px;
+}
