@@ -1,50 +1,61 @@
-let id = document.getElementById("id-input");
+let idElement = document.getElementById("id-input");
 let personId = "";
-id.addEventListener("input", (event) => {
+idElement.addEventListener("input", (event) => {
   personId = event.target.value;
 });
 
-let _name = document.getElementById("name-input");
+let nameElement = document.getElementById("name-input");
 let personName = "";
-_name.addEventListener("input", (event) => {
+nameElement.addEventListener("input", (event) => {
   personName = event.target.value;
 });
 
-let task = document.getElementById("task-input");
+let taskIdElement = document.getElementById("task-id-input");
+let taskId = "";
+taskIdElement.addEventListener("input", (event) => {
+  taskId = event.target.value;
+});
+
+let taskNameElement = document.getElementById("task-name-input");
 let taskName = "";
-task.addEventListener("input", (event) => {
+taskNameElement.addEventListener("input", (event) => {
   taskName = event.target.value;
 });
 
 let createButton = document.getElementById("createPersonButton");
-let createTaskButton = document.getElementById("createTaskButton");
 let readButton = document.getElementById("readButton");
 let readAllButton = document.getElementById("readAllButton");
 let updatePersonButton = document.getElementById("updatePersonButton");
-let updateTaskButton = document.getElementById("updateTaskButton");
 let deletePersonButton = document.getElementById("deletePersonButton");
+
+let createTaskButton = document.getElementById("createTaskButton");
+let updateTaskButton = document.getElementById("updateTaskButton");
 let deleteTaskButton = document.getElementById("deleteTaskButton");
 
 createButton.onclick = async () => {
-  await createPerson(personName);
-};
-createTaskButton.onclick = async () => {
-  await createTask(personId, taskName);
+  await createPerson(personName, taskName);
 };
 readButton.onclick = async () => {
-  await readByPersonId(personId);
+  await readPersonById(personId);
 };
 readAllButton.onclick = async () => {
   await readAllPeople();
 };
 updatePersonButton.onclick = async () => {
-  await updateByPersonId(personId, personName);
-};
-updateTaskButton.onclick = async () => {
-  await updateByTaskId(personId, taskName);
+  await updatePersonById(personId, personName);
 };
 deletePersonButton.onclick = async () => {
-  await deleteByPersonId(personId, personName);
+  await deletePersonById(personId);
+};
+
+createTaskButton.onclick = async () => {
+  await createTask(personId, taskName);
+};
+updateTaskButton.onclick = async () => {
+  await updateTaskById(taskId, taskName);
+};
+deleteTaskButton.onclick = async () => {
+  await deleteTaskById(taskId);
 };
 
 async function createPerson(personName, taskName) {
@@ -67,35 +78,8 @@ async function createPerson(personName, taskName) {
   div.innerText = `New name has been added!`;
 }
 
-async function createTask(personId, taskName) {
-  let personIdInt = parseInt(personId);
-  console.log(personId);
-  let response = await fetch(`http://localhost:9092/todolist/create`, {
-    method: "POST",
-    headers: {
-      "Content-type": "application/json ",
-    },
-    body: JSON.stringify({
-      name: taskName,
-      person: {
-        id: personIdInt,
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    console.log(
-      `Looks like there was a problem. Status Code: ${response.status}`
-    );
-    return;
-  }
-  console.log(taskName, personId);
-  let div = document.getElementById("myDiv");
-  div.innerText = `New task has been added!`;
-}
-
-async function readByPersonId(id) {
-  let response = await fetch(`http://localhost:9092/person/read/${id}`, {
+async function readPersonById(personId) {
+  let response = await fetch(`http://localhost:9092/person/read/${personId}`, {
     method: "GET",
     headers: {
       "Content-type": "application/json ",
@@ -113,15 +97,18 @@ async function readByPersonId(id) {
   console.log(data);
 
   let div = document.getElementById("myDiv");
-  let listItems = [];
-  let listItemId = `ID : ${data.id}<br>`;
-  let listItemName = `NAME : ${data.name}<br>`;
-  let listItemTasks = `TASKS: ${data.tasks}<br>`;
+  let personID = `Person ID: ${data.id}<br>`;
+  let personName = `Name: ${data.name}<br>`;
+  let personTasks = [];
 
-  let listItem = `<li>${listItemId}${listItemName}${listItemTasks}<br><br></li>`;
-  listItems.push(listItem);
-  let unorderedList = `<ul>${listItems.join("")}</ul>`;
-  div.innerHTML = unorderedList;
+  for (let task of data.tasks) {
+    personTasks.push(`(${task.id}: ${task.name})`);
+  }
+
+  personTasks = "Tasks: " + personTasks.join(", ") + "<br><br>";
+
+  let listItem = `${personID}${personName}${personTasks}`;
+  div.innerHTML = listItem;
 }
 
 async function readAllPeople() {
@@ -143,51 +130,33 @@ async function readAllPeople() {
   console.log(data);
 
   let div = document.getElementById("myDiv");
-  div.innerHTML = "";
+  let people = [];
 
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].task.length != 0) {
-      var entry = `<tr>
-                  <td> PERSON ID : ${data_i.id}</td>
-                  <td> NAME : ${data_i.name}</td>                  
-                  </tr>`;
-      div.innerHTML += entry;
-      console.log(entry);
-
-      let listItemId = `PERSON ID : ${data_i.id}<br>`;
-      let listItemName = `NAME : ${data_i.name}<br>`;
-      let listItemTasks = `TASKS: ${data_i.tasks}<br>`;
-    }
+  for (let data_i of data) {
+    let person = `Person ID: ${data_i.id}<br>Name: ${data_i.name}<br>Tasks: `;
+    let task_strings = [];
     if (data_i.tasks !== undefined) {
-      for (let j = 0; j < data_i.tasks.length; j++) {
-        //let listItemTask = `<li>${data_i.tasks[j].name}</li>`;
-        console.log(data_i.task_j.name);
-        console.log(data_i.name);
-        console.log(task[j].name);
-        //listItemTasks.push(listItemTask);
-        var entry = `
-                  <tr>
-                  <td>${data_i.id}</td>
-                  <td>${data_i.name}</td>
-                  <td>${data_i.task[j].name}</td>
-                  </tr>
-                  console.log(${data_i.task[j].name});
-                    `;
-        div.innerHTML += entry;
-        console.log(entry);
+      for (let task_j of data_i.tasks) {
+        task_strings.push(`(${task_j.id}: ${task_j.name})`);
       }
     }
+    person += task_strings.join(", ") + "<br><br>";
+    people.push(person);
   }
+  div.innerHTML = people.join("");
 }
 
-async function updateByPersonId(id, data) {
-  let response = await fetch(`http://localhost:9092/person/update/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-type": "application/json ",
-    },
-    body: JSON.stringify({ name: data }),
-  });
+async function updatePersonById(personId, personName) {
+  let response = await fetch(
+    `http://localhost:9092/person/update/${personId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json ",
+      },
+      body: JSON.stringify({ name: personName }),
+    }
+  );
 
   if (!response.ok) {
     console.log(
@@ -197,16 +166,19 @@ async function updateByPersonId(id, data) {
   }
 
   let div = document.getElementById("myDiv");
-  div.innerText = `Entry with Person Id ${id} has been updated!`;
+  div.innerText = `Entry with Person ID ${personId} has been updated!`;
 }
 
-async function deleteByPersonId(id) {
-  let response = await fetch(`http://localhost:9092/person/delete/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-type": "application/json ",
-    },
-  });
+async function deletePersonById(personId) {
+  let response = await fetch(
+    `http://localhost:9092/person/delete/${personId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json ",
+      },
+    }
+  );
 
   if (!response.ok) {
     console.log(
@@ -216,5 +188,75 @@ async function deleteByPersonId(id) {
   }
 
   let div = document.getElementById("myDiv");
-  div.innerText = `Entry with Person Id ${id} has been deleted!`;
+  div.innerText = `Entry with Person ID ${personId} has been deleted!`;
+}
+
+async function createTask(personId, taskName) {
+  let personIdInt = parseInt(personId);
+  let response = await fetch(`http://localhost:9092/todolist/create`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json ",
+    },
+    body: JSON.stringify({
+      name: taskName,
+      person: {
+        id: personIdInt,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    console.log(
+      `Looks like there was a problem. Status Code: ${response.status}`
+    );
+    return;
+  }
+  let div = document.getElementById("myDiv");
+  div.innerText = `New task has been added!`;
+}
+
+async function updateTaskById(taskId, taskName) {
+  let response = await fetch(
+    `http://localhost:9092/todolist/update/${taskId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json ",
+      },
+      body: JSON.stringify({ name: taskName }),
+    }
+  );
+
+  if (!response.ok) {
+    console.log(
+      `Looks like there was a problem. Status Code: ${response.status}`
+    );
+    return;
+  }
+
+  let div = document.getElementById("myDiv");
+  div.innerText = `Entry with Task ID ${taskId} has been updated!`;
+}
+
+async function deleteTaskById(taskId) {
+  let response = await fetch(
+    `http://localhost:9092/todolist/delete/${taskId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json ",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    console.log(
+      `Looks like there was a problem. Status Code: ${response.status}`
+    );
+    return;
+  }
+
+  let div = document.getElementById("myDiv");
+  div.innerText = `Entry with Task ID ${taskId} has been deleted!`;
 }

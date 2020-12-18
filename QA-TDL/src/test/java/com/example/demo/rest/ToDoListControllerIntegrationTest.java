@@ -173,29 +173,5 @@ public class ToDoListControllerIntegrationTest {
 	}
 	
 	
-////	// Read Name test
-////	@Test
-////	void testFindName() throws Exception {
-////		ToDoListDto testDTO = mapToDTO(new ToDoList(1L,"Testing"));
-////		String testDTOAsJSON = this.jsonifier.writeValueAsString(testDTO);
-////		List<ToDoListDto> listDTO = new ArrayList<>();
-////		listDTO.add(testDTO);
-////
-////		RequestBuilder request = get(URI + "/findByName/Testing").contentType(MediaType.APPLICATION_JSON).content(testDTOAsJSON);
-////
-////		ResultMatcher checkStatus = status().isOk();
-////
-////		ToDoListDto testSavedDTO = mapToDTO(new ToDoList(1L,"Testing"));
-////		testSavedDTO.setId(1L);
-////		List<ToDoListDto> listSavedDTO = new ArrayList<>();
-////		listSavedDTO.add(testSavedDTO);
-////		String testSavedDTOAsJSON = this.jsonifier.writeValueAsString(listSavedDTO);
-////
-////		ResultMatcher checkBody = content().json(testSavedDTOAsJSON);
-////
-////		this.mvc.perform(request).andExpect(checkStatus).andExpect(checkBody);
-//
-////		this.mvc.perform(post(URI + "/create").contentType(MediaType.APPLICATION_JSON).content(testDTOAsJSON))
-////				.andExpect(status().isCreated()).andExpect(content().json(testSavedDTOAsJSON));
-////	}
+
 }

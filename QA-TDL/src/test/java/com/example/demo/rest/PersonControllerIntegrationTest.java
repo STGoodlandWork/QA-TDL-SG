@@ -178,29 +178,5 @@ public class PersonControllerIntegrationTest {
 	}
 	
 	
-	// Read Name test
-	@Test
-	void testFindName() throws Exception {
-		PersonDto testDTO = mapToDTO(new Person(1L,"Testing", tasks));
-		String testDTOAsJSON = this.jsonifier.writeValueAsString(testDTO);
-		List<PersonDto> listDTO = new ArrayList<>();
-		listDTO.add(testDTO);
 
-		RequestBuilder request = get(URI + "/findByName/Testing").contentType(MediaType.APPLICATION_JSON).content(testDTOAsJSON);
-
-		ResultMatcher checkStatus = status().isOk();
-
-		PersonDto testSavedDTO = mapToDTO(new Person(1L,"Testing", tasks));
-		testSavedDTO.setId(1L);
-		List<PersonDto> listSavedDTO = new ArrayList<>();
-		listSavedDTO.add(testSavedDTO);
-		String testSavedDTOAsJSON = this.jsonifier.writeValueAsString(listSavedDTO);
-
-		ResultMatcher checkBody = content().json(testSavedDTOAsJSON);
-
-		this.mvc.perform(request).andExpect(checkStatus).andExpect(checkBody);
-
-		this.mvc.perform(post(URI + "/create").contentType(MediaType.APPLICATION_JSON).content(testDTOAsJSON))
-				.andExpect(status().isCreated()).andExpect(content().json(testSavedDTOAsJSON));
-	}
 }

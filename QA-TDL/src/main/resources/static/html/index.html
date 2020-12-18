@@ -9,29 +9,37 @@
 
 <body>
     <div class="container">
-        <!-- <button class="btn btn-success" onclick="getData()" > Get data</button> -->
+        <div class="inputs">
+            <div class="person-inputs">
+                <input type="text" id="id-input" placeholder="Enter a Person ID" />
+                <input type="text" id="name-input" placeholder="Enter a Name" />
+            </div>
+            <div class="task-inputs">
+                <input type="text" id="task-id-input" placeholder="Enter a Task ID" />
+                <input type="text" id="task-name-input" placeholder="Enter a Task" />
+            </div>
+        </div>
 
-        <table id="tbl" class="table table-dark"></table>
+        <div class="buttons">
+            <div class="buttons-person">
+                <button id="createPersonButton">Create Person</button>
+                <button id="readButton">Read Person by ID</button>
+                <button id="readAllButton">Read All</button>
+                <button id="updatePersonButton">Update Person by ID</button>
+                <button id="deletePersonButton">Delete Person by ID</button>
+            </div>
 
-        <!-- <div id="resp" ></div> -->
+            <div class="buttons-task">
+                <button id="createTaskButton">Create Task</button>
+                <button id="updateTaskButton">Update Task by ID</button>
+                <button id="deleteTaskButton">Delete Task by ID</button>
+            </div>
+        </div>
+
+        <br>
+
         <div id="myDiv"></div>
-
-        <input type="text" id="id-input" placeholder="Enter an ID..." />
-        <input type="text" id="name-input" placeholder="Enter a name..." />
-        <input type="text" id="task-input" placeholder="Enter a todo..." />
-        <button id="createPersonButton">Create Person</button>
-        <button id="createTaskButton">Create Task</button>
-        <button id="readButton">Read by PersonID</button>
-        <button id="readAllButton">Read All</button>
-        <button id="updatePersonButton">Update Person by ID</button>
-        <button id="updateTaskButton">Update Task by ID</button>
-        <button id="deletePersonButton">Delete Person by ID</button>
-        <button id="deleteTaskButton">Delete Task by ID</button>
-
-
     </div>
-
-
 
     <script src="../js/main.js"></script>
 
