@@ -64,20 +64,25 @@ public class PersonControllerIntegrationTest {
 	// Create test
 	@Test
 	void createTest() throws Exception {
+		//Creating empty list
 		List<ToDoList> tasks = new ArrayList<>();
+		//Creating new person, adding 
 		PersonDto testDTO = mapToDTO(new Person(1L,"Testing", tasks));
+		//Converting DTO to JSON String
 		String testDTOAsJSON = this.jsonifier.writeValueAsString(testDTO);
 
+		//Building HTTP request in Java
 		RequestBuilder request = post(URI + "/create").contentType(MediaType.APPLICATION_JSON).content(testDTOAsJSON);
-
+		//Expecting code 201 back
 		ResultMatcher checkStatus = status().isCreated();
-
+		//Creating a replica of the person above
 		PersonDto testSavedDTO = mapToDTO(new Person(1L, "Testing", tasks));
 		testSavedDTO.setId(1L);
+		//Converting to a JSON string
 		String testSavedDTOAsJSON = this.jsonifier.writeValueAsString(testSavedDTO);
-
+		
 		ResultMatcher checkBody = content().json(testSavedDTOAsJSON);
-
+		// Perform HTTP request, expect back the status code & JSON String we just specified
 		this.mvc.perform(request).andExpect(checkStatus).andExpect(checkBody);
 
 
